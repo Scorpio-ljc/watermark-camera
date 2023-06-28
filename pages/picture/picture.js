@@ -3,13 +3,13 @@ var QQMapWX = require('../../libs/qqmap-wx-jssdk.js');
 var qqmapsdk = new QQMapWX({
 	key: 'UDUBZ-OZQ3F-IGWJH-JVQLK-SI5J2-UPFAU' // 必填
 });
-var timer;
+var timerInter;
 Page({
 	data: {
 		imageUrl: "https://img.btstu.cn/api/images/5bd2af56cbbed.jpg",
 		canvasHeight: 0,
 		canvasWidth: 0,
-		date: "",
+		date: '',
 		time: '',
 		week: '',
 		address: '',
@@ -74,7 +74,8 @@ Page({
 
 	},
 	getTime: function () {
-		timer = setInterval(() => {
+		clearInterval(timerInter)
+		timerInter = setInterval(() => {
 			let timeData = Utils.formatTime()
 			this.setData({
 				date: timeData.date,
@@ -106,6 +107,11 @@ Page({
 		})
 	},
 
+	currentTime: function () {
+		this.getTime();
+		this.closePicker();
+	},
+
 	/**
 	 * 手动选择地点
 	 */
@@ -122,12 +128,32 @@ Page({
 			}
 		})
 	},
+	/**
+	 * 点击地址输入
+	 */
+	locationOnclick: function () {
+		var that = this;
+		wx.showModal({
+			title: '提示',
+			editable: true,
+			placeholderText: '请输入地址',
+			success (res) {
+				if (res.confirm) {
+					console.log('用户点击确定')
+					that.setData({
+						address: res.content
+					})
+				}
+			}
+		})
+		
+	},
 
 	/**
 	 * 手动选择时间
 	 */
 	setTime: function () {
-		clearInterval(timer)
+		clearInterval(timerInter);
 		this.setData({
 			showPicker: true
 		})
@@ -241,7 +267,7 @@ Page({
 				image.onload = () => {
 					ctx.drawImage(image, 0, 0, canvasWidth, canvasHeight);
 
-					ctx.font = 'normal 14px null';
+					ctx.font = 'normal 10px null';
 					ctx.fillStyle = '#ffffff';
 					ctx.textBaseline = 'bottom';
 
@@ -249,10 +275,10 @@ Page({
 					ctx.fillText(this.data.address, 10, canvasHeight - 20);
 
 					//绘制时间
-					ctx.fillText(this.data.date + ' ' + this.data.time, 10, canvasHeight - 45);
+					ctx.fillText(this.data.date + ' ' + this.data.time, 10, canvasHeight - 35);
 
 					//绘制星期
-					ctx.fillText(this.data.week, 10, canvasHeight -70);
+					ctx.fillText(this.data.week, 10, canvasHeight -50);
 
 					setTimeout(() => {
 						wx.canvasToTempFilePath({

@@ -5,9 +5,12 @@
 <view class="watermark" wx:if="{{week}}">
 	<view class="week">{{week}}</view>
 	<view class="time">{{date+' '+time}}</view>
-	<view class="location_box">
+	<view class="location_box" bindtap="locationOnclick">
 		<view class="location">{{address}}</view>
 	</view>
+</view>
+<view class="tip_class">
+点击地址可直接输入
 </view>
 
 <view class="bottom_box">
@@ -29,7 +32,7 @@
 	<view class="time_picker_box">
 		<view class="time_picker_title">设置水印日期</view>
 		<view class="section">
-			<picker mode="date" value="{{date}}" start="2015-09-01" end="2017-09-01" bindchange="bindDateChange">
+			<picker mode="date" value="{{date}}" start="2015-09-01" end="2060-09-01" bindchange="bindDateChange">
 				<view class="picker">
 					设定日期:<view class="box"> {{date}}</view>
 				</view>
@@ -42,6 +45,7 @@
 				</view>
 			</picker>
 		</view>
+		<button type="primary" class="time_picker_btn" bindtap="currentTime">当前时间</button>
 		<button type="primary" class="time_picker_btn" bindtap="closePicker">设置完成</button>
 	</view>
 </view>
